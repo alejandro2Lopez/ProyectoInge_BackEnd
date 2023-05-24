@@ -1,0 +1,126 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0; 
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0; 
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema babershop
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema babershop
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `barbershop` ;
+USE `barbershop` ;
+
+-- -----------------------------------------------------
+-- Table `babershop`.`Persona`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`Persona` (
+  `idPersona` INT AUTO_INCREMENT NOT NULL,
+`nombreUsuario` VARCHAR(45) NOT NULL,
+  `contrasennia` VARCHAR(45) NOT NULL,
+  `numeroTelefonico` VARCHAR(45) NOT NULL,
+  `gmail` VARCHAR(50) NOT NULL,
+  `activoSN` boolean NOT NULL DEFAULT 0,
+  `idRolPersona` SMALLINT NOT NULL DEFAULT 2,
+  PRIMARY KEY (`idPersona`),
+    CONSTRAINT `fk_TipoPersona_RolPersona1`
+    FOREIGN KEY (`idRolPersona`)
+    REFERENCES `babershop`.`RolPersona` (`idRolPersona`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION )
+  
+ENGINE = InnoDB;
+
+
+
+-- -----------------------------------------------------
+-- Table `babershop`.`RolPersona`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`RolPersona` (
+  `idRolPersona` SMALLINT  AUTO_INCREMENT  NOT NULL,
+  `Descripcion` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idRolPersona`))
+ENGINE = InnoDB;
+
+
+
+-- -----------------------------------------------------
+-- Table `babershop`.`Producto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`Producto` (
+  `idProducto` INT  AUTO_INCREMENT NOT NULL,
+  `imagen` VARCHAR(100) NOT NULL,
+  `descripcion` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`idProducto`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `babershop`.`TipoCorte`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`TipoCorte` (
+  `idTipoCorte` SMALLINT  AUTO_INCREMENT NOT NULL,
+  `descripcion` VARCHAR(50) NOT NULL,
+  `duracionCorte` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`idTipoCorte`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `babershop`.`Cita`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`Cita` (
+  `idCita` INT  AUTO_INCREMENT NOT NULL,
+  `idPersonaB` INT NOT NULL,
+  `idPersonaC` INT NOT NULL,
+  `hora` VARCHAR(10) NOT NULL,
+  `fecha` DATE NOT NULL,
+  `idTipoCorte` SMALLINT NOT NULL,
+  `AsisteSN` BOOLEAN DEFAULT 0,
+  PRIMARY KEY (`idCita`),
+  CONSTRAINT `fk_Cita_Persona1`
+    FOREIGN KEY (`idPersonaB`)
+    REFERENCES `babershop`.`Persona` (`idPersona`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Cita_TipoCorte1`
+    FOREIGN KEY (`idTipoCorte`)
+    REFERENCES `babershop`.`TipoCorte` (`idTipoCorte`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `babershop`.`About`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`About` (
+  `idAbout` SMALLINT  AUTO_INCREMENT NOT NULL,
+  `Descripcion` VARCHAR(100) NULL,
+  `idPersona` INT NULL,
+  PRIMARY KEY (`idAbout`),
+  CONSTRAINT `fk_About_Persona1`
+    FOREIGN KEY (`idPersona`)
+    REFERENCES `babershop`.`Persona` (`idPersona`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `babershop`.`TrabajoRealizado`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `barbershop`.`TrabajoRealizado` (
+  `idTrabajoRealizado` INT  AUTO_INCREMENT NOT NULL,
+  `imagen` VARCHAR(100) NOT NULL,
+  `descripcion` VARCHAR(100) NULL,
+  `idTipoCorte` SMALLINT NOT NULL,
+  PRIMARY KEY (`idTrabajoRealizado`),
+  CONSTRAINT `fk_TrabajoRealizado_TipoCorte1`
+    FOREIGN KEY (`idTipoCorte`)
+    REFERENCES `babershop`.`TipoCorte` (`idTipoCorte`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)

@@ -23,3 +23,14 @@ insert into Persona(nombreUsuario, contrasennia, numeroTelefonico ,gmail) values
 CREATE PROCEDURE getUsers()
     SELECT nombreUsuario, numeroTelefonico, gmail, activoSN
     FROM Persona;
+
+//MODIFICAR -NO LISTO
+CREATE PROCEDURE getCita(c_Hora VARCHAR(10), c_fecha DATE)
+        SELECT C.idPersonaB, C.idPersonaC, C.hora, C.fecha, C.idTipoCorte, C.AsisteSN
+        FROM (Persona as P inner join Cita as C
+        ON (P.idPersona = C.idPersonaB))
+        WHERE (P.idPersona = C.idPersonaC)
+ 
+ CREATE PROCEDURE getCitas()
+    SELECT idPersonaB, idPersonaC, hora, fecha, idTipoCorte, AsisteSN
+    FROM Cita;   

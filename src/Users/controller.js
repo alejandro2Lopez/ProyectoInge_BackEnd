@@ -62,6 +62,7 @@ module.exports.UsersController = {
             console.log(result)
             if (result[0] != undefined && result[0].contrasennia == body.password.toString()) {
                 data = {
+                    idperson: result[0].idPersona,
                     username: result[0].nombreUsuario,
                     gmail: result[0].gmail,
                     role: result[0].descripcion,

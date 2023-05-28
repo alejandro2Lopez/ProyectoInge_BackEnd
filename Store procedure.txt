@@ -1,0 +1,36 @@
+
+CREATE  PROCEDURE getUser(u_gmail VARCHAR(50))  
+SELECT R.descripcion , P.nombreUsuario, P.gmail, P.contrasennia, P.numeroTelefonico, activoSN
+FROM ((TipoPersona AS T inner join RolPersona AS R
+ON (T.idRolPersona = R.idRolPersona))   
+INNER JOIN Persona AS P ON (T.idPersona = P.idPersona)) WHERE P.gmail = u_gmail
+
+
+//Se utiliza para que el trigger funcione
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
+
+CREATE TRIGGER registraNotificacion AFTER INSERT ON Persona
+FOR EACH ROW 
+
+        INSERT INTO TipoPersona(idPersona, idRolPersona)
+        VALUES
+        (NEW.idPersona, 2);
+   
+CREATE PROCEDURE insert_User(u_nombreUsuario VARCHAR(45),u_contrasennia varchar(45) ,u_numeroTelefonico VARCHAR(45), u_gmail VARCHAR(50))
+insert into Persona(nombreUsuario, contrasennia, numeroTelefonico ,gmail) values 
+					(u_nombreUsuario, u_contrasennia,u_numeroTelefonico, u_gmail)
+
+CREATE PROCEDURE getUsers()
+    SELECT nombreUsuario, numeroTelefonico, gmail, activoSN
+    FROM Persona;
+
+//MODIFICAR -NO LISTO
+CREATE PROCEDURE getCita(c_Hora VARCHAR(10), c_fecha DATE)
+        SELECT C.idPersonaB, C.idPersonaC, C.hora, C.fecha, C.idTipoCorte, C.AsisteSN
+        FROM (Persona as P inner join Cita as C
+        ON (P.idPersona = C.idPersonaB))
+        WHERE (P.idPersona = C.idPersonaC)
+ 
+ CREATE PROCEDURE getCitas()
+    SELECT idPersonaB, idPersonaC, hora, fecha, idTipoCorte, AsisteSN
+    FROM Cita;   

@@ -21,10 +21,10 @@ const resultsql = (sqlQuery) => {
             return pool.request().query(`EXECUTE ${sqlQuery}`);
         }).then(result => {
             resolve(result.recordset);
-            sql.close();
+        
         }).catch(err => {
             reject(err);
-            sql.close();
+            
         });
     });
 };

@@ -3,11 +3,11 @@ const router = express.Router();
 const { CitasController } = require('./controller');
 
 module.exports.CitasAPI = (app) => {
-    router
+  router
     .get('/', CitasController.getCitas)//Se utiliza para concatenar
     .get('/:id', CitasController.getCitas)//Se utiliza para concatenar
-    //.post('/signup',UsersController.registerUser)
-    //.post('/login',UsersController.loginUser)
-    
-    app.use('/api/citas', router)
-  }
+    .post('/', CitasController.confirmDate)
+
+
+  app.use('/api/citas', router)
+}

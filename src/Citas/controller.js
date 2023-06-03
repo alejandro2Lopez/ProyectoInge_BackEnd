@@ -1,6 +1,6 @@
 const { Response } = require("../common/response");
 const { resultsql } = require("../database")
-const bcrypt = require("bcrypt");
+var nodemailer = require('nodemailer');
 
 module.exports.CitasController = {
     getCitas: (req, res) => {
@@ -18,32 +18,97 @@ module.exports.CitasController = {
                         Response.success(res, 200, "Citas Registradas", hour);
                     } else {
                         result.sort((x, y) => x.idHoraCita - y.idHoraCita);
-                        //  if (data[1] === 1 || data[0] === 2) {
+                        if (parseInt(data[1]) === 1 || parseInt(data[1]) === 2) {
 
-                        for (var index1 = 0; index1 < hour.length; index1++) {
+                            for (var index1 = 0; index1 < hour.length; index1++) {
 
-                            for (let index2 = 0; index2 < result.length; index2++) {
-                                if (hour[index1].idHoraCita === result[index2].idHoraCita) {
+                                for (let index2 = 0; index2 < result.length; index2++) {
+                                    if (hour[index1].idHoraCita === result[index2].idHoraCita) {
+                                        hour[index1].HoraCita = "Ocupado";
+                                    }
+
+                                }
+                            }
+                            Response.success(res, 200, "Citas Registradas", hour);
+                        } else {
+                            console.log(result)
+
+                            for (var index1 = 0; index1 < hour.length; index1++) {
+
+                                for (let index2 = 0; index2 < result.length; index2++) {
+                                    if (hour[index1].idHoraCita === result[index2].idHoraCita) {
+                                        hour[index1].HoraCita = "Ocupado";
+                                    }
+
+                                }
+                            }
+                            for (var index1 = 0; index1 < hour.length; index1++) {
+
+                                if (index1 > 1 && index1 <= 11) {
+                                    if (hour[index1].HoraCita === "Ocupado") {
+                                        hour[index1 - 1].HoraCita = "Ocupado"
+
+
+                                    }
+                                }
+                                else if (index1 >= 12 && index1 <= 31) {
+                                    if (hour[index1].HoraCita === "Ocupado") {
+                                        hour[index1 - 1].HoraCita = "Ocupado";
+
+                                    }
+
+
+
+                                }
+                            }
+                            for (var index1 = 0; index1 < hour.length; index1++) {
+
+
+                                if (index1 === 0 && hour[(index1 + 1)].HoraCita === "Ocupado") {
                                     hour[index1].HoraCita = "Ocupado";
+                                } else if (index1 > 1 && index1 <= 11) {
+                                    if (hour[(index1 + 1)].HoraCita === "Ocupado" && hour[(index1 - 1)].HoraCita === "Ocupado") {
+                                        hour[index1].HoraCita = "Ocupado";
+                                    }
+
+                                } else if (index1 > 12 && index1 < 31) {
+                                    if (hour[(index1 + 1)].HoraCita === "Ocupado" && hour[(index1 - 1)].HoraCita === "Ocupado") {
+                                        hour[index1].HoraCita = "Ocupado";
+                                    }
+
+                                    for (var index1 = 0; index1 < hour.length; index1++) {
+                                        if (index1 < 11) {
+                                            if (hour[index1].HoraCita !== "Ocupado") {
+                                                hour[index1 + 1].HoraCita = "Ocupado";
+
+                                            }
+                                        }
+
+
+                                        if (index1 >= 12 && index1 < 31) {
+                                            if (hour[index1].HoraCita !== "Ocupado") {
+                                                hour[index1 + 1].HoraCita = "Ocupado";
+
+                                            }
+                                        }
+
+                                        if (index1 === 11 && hour[index1 - 1].HoraCita === "Ocupado") {
+                                            hour[index1].HoraCita = "Ocupado";
+
+                                        }
+                                        if (index1 === 31 && hour[index1 - 1].HoraCita === "Ocupado") {
+                                            hour[index1].HoraCita = "Ocupado";
+
+                                        }
+                                    }
+
                                 }
 
                             }
-                            //    }
 
-                            // } else {
-                            //   for (var index1 = 0; index1 < hour.length - 1; index1++) {
-                            //
-                            //                              for (let index2 = 0; index2 < result.length; index2++) {
-                            //                                if (hour[index1 + 1].idHoraCita === result[index2].idHoraCita) {
-                            //                                  hour[index1].HoraCita = "Ocupado";
-                            //                                hour[index1 + 1].idHoraCita = "Ocupado"
-                            //                              index1++;
-                            //                        }
-
-                            //                  }
-                            //            }
+                            Response.success(res, 200, "Citas Registradas", hour);
                         }
-                        Response.success(res, 200, "Citas Registradas", hour);
+
                     }
 
                 }
@@ -57,6 +122,62 @@ module.exports.CitasController = {
             });
         } catch (error) {
             console.log(error);
+        }
+    },
+    confirmDate: (req, res) => {
+        var transporter = nodemailer.createTransport({
+            service: 'hotmail',
+            auth: {
+                user: 'correo',
+                pass: 'password'
+            }
+        });
+
+        const { body } = req;
+        if (body.hairCut == 1 || body.hairCut == 2) {
+            resultsql(`insert_Date '${body.barber}',${body.client},${body.hourid},'${body.date}',${body.hairCut}`).then((result) => {
+                Response.success(res, 200, "Citas Registradas", "Su cita ha sido agendada con éxtio");
+
+            }).catch((message) => {
+                console.log(message);
+            });
+            var mailOptions = {
+                from: 'correo',
+                to: 'ale1jandro.lopez@gmail.com',
+                subject: 'Confirmación de Cita',
+                text: `Su cita para el barbero será en la fecha ${body.date} a las ${body.hour} `
+            };
+
+            /* transporter.sendMail(mailOptions, function (error, info) {
+                  if (error) {
+                      console.log(error);
+                  } else {
+                      console.log('Email sent: ' + info.response);
+                  }
+              });*/
+        } else {
+            try {
+                resultsql(`insert_Date '${body.barber}',${body.client},${body.hourid},'${body.date}',${body.hairCut}`)
+                resultsql(`insert_Date '${body.barber}',${body.client},${(body.hourid + 1)},'${body.date}',${body.hairCut}`)
+                var mailOptions = {
+                    from: 'correo',
+                    to: 'ale1jandro.lopez@gmail.com',
+                    subject: 'Confirmación de Cita',
+                    text: `Su cita para el barbero será en la fecha ${body.date} a las ${body.hour} `
+                };
+
+                /*   transporter.sendMail(mailOptions, function (error, info) {
+                       if (error) {
+                           console.log(error);
+                       } else {
+                           console.log('Email sent: ' + info.response);
+                       }
+                   });*/
+                Response.success(res, 200, "Citas Registradas", "Su cita ha sido agendada con éxtio");
+            } catch (message) {
+                Response.success(res, 200, "Citas Registradas", "Su cita no ha sido agendada con éxtio");
+            }
+
         }
     }
 }

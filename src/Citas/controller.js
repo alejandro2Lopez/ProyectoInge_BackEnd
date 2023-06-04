@@ -1,5 +1,6 @@
 const { Response } = require("../common/response");
 const { resultsql } = require("../database")
+const moment = require("moment")
 var nodemailer = require('nodemailer');
 
 module.exports.CitasController = {
@@ -11,7 +12,8 @@ module.exports.CitasController = {
             resultsql(`getHoursDatesByDateByBarber '${data[2]}',${data[0]}`).then((result) => {
                 console.log(result.length);
                 const fecha = new Date();
-                console.log(` Dia ${fecha.getDate()}`);
+                console.log(` Dia ${moment().format('LT').substring(0, 1)}`);
+                console.log(fecha.getHours().toString().substring(0, 1))
                 resultsql("getHoursDate").then((hour) => {
 
                     if (result.length <= 0) {
@@ -179,5 +181,44 @@ module.exports.CitasController = {
             }
 
         }
+    },
+    deletedate: (req, res) => {
+        const { params } = req
+        data = params.id.split(",");
+        resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`)
+        Response.success(res, 200, "Cita eliminada", "Su cita ha sido eliminada con éxito");
+    },
+    getDatebyUser: (req, res) => {
+        const { params } = req;
+        resultsql(`getDatebyUser ${params.id}`).then((result) => {
+            const fulldate = new Date().toISOString().slice(0, 10);
+            const fecha = new Date();
+           
+            for (let index = 0; index < result.length; index++) {
+                var hora = 0;
+                if (result[index].HoraCita.toString().substring(result[index].HoraCita.toString().length - 2, result[index].HoraCita.toString().length) === "pm") {
+                    hora = (parseInt(result[index].HoraCita.toString().split(':')[0]) + 12);
+                    console.log(hora)
+                }
+
+                if ((fecha.getHours() + 2) > hora &&
+                    fulldate == result[index].fecha.toISOString().substring(0, 10)) {
+                    result[index].cancelar = 0
+
+                } if (fulldate == result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
+                    && moment().format('LT').split(':')[0] == 11) {
+                    result[index].cancelar = 0
+
+
+                }
+            }
+            Response.success(res, 200, "Citas Registradas", result);
+
+
+
+        }).catch((message) => {
+            console.log(message);
+        });
+
     }
 }

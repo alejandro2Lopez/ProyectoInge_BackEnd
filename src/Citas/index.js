@@ -4,9 +4,12 @@ const { CitasController } = require('./controller');
 
 module.exports.CitasAPI = (app) => {
   router
-    .get('/', CitasController.getCitas)//Se utiliza para concatenar
+    .get('/citasdeusuario/:id', CitasController.getDatebyUser)
+
     .get('/:id', CitasController.getCitas)//Se utiliza para concatenar
+    //Se utiliza para concatenargetDatebyUser)
     .post('/', CitasController.confirmDate)
+    .delete('/citasdeusuario/:id', CitasController.deletedate)
 
 
   app.use('/api/citas', router)

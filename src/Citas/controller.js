@@ -191,24 +191,20 @@ module.exports.CitasController = {
     getDatebyUser: (req, res) => {
         const { params } = req;
         resultsql(`getDatebyUser ${params.id}`).then((result) => {
-            const fulldate = new Date().toISOString().slice(0, 10);
+
             const fecha = new Date();
-           
+            var now = moment().format("YYYY-MM-DD");
             for (let index = 0; index < result.length; index++) {
-                var hora = 0;
+                var hora = parseInt(result[index].HoraCita.toString().split(':')[0]);
                 if (result[index].HoraCita.toString().substring(result[index].HoraCita.toString().length - 2, result[index].HoraCita.toString().length) === "pm") {
                     hora = (parseInt(result[index].HoraCita.toString().split(':')[0]) + 12);
                     console.log(hora)
                 }
 
-                if ((fecha.getHours() + 2) > hora &&
-                    fulldate == result[index].fecha.toISOString().substring(0, 10)) {
+                console.log(now == result[index].fecha.toISOString().substring(0, 10));
+                if ((fecha.getHours() + 2) >= hora &&
+                    now == result[index].fecha.toISOString().substring(0, 10)) {
                     result[index].cancelar = 0
-
-                } if (fulldate == result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
-                    && moment().format('LT').split(':')[0] == 11) {
-                    result[index].cancelar = 0
-
 
                 }
             }

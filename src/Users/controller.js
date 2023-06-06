@@ -23,12 +23,12 @@ module.exports.UsersController = {
         var con = 0;
         resultsql("getUsers").then((result) => {
             for (let index = 0; index < result.length; index++) {
-                console.log(result[index].gmail)
+                console.log(result[index].email)
                 if (result[index].numeroTelefonico === body.numberphone) {
                     verify[con] = "numero telefonico repetido";
                     con++;
                 }
-                if (result[index].gmail === body.gmail) {
+                if (result[index].gmail === body.email) {
                     verify[con] = "email igual";
                     con++;
                 }
@@ -41,9 +41,16 @@ module.exports.UsersController = {
             }
             else {
                 resultsql(`insert_User '${body.username}', '${body.password}', '${body.numberphone}', '${body.gmail}' `);
+                resultsql(`getUserId`).then((result) => {
+                    console.log(result);
+                    Response.success(res, 200, "registrado", result);
+                }
+                ).catch((message) => {
+                    console.log(message);
+                });
 
 
-                Response.success(res, 200, "Registrado", body.username);
+              
 
 
 

@@ -28,7 +28,7 @@ module.exports.UsersController = {
                     verify[con] = "numero telefonico repetido";
                     con++;
                 }
-                if (result[index].gmail === body.email) {
+                if (result[index].email === body.email) {
                     verify[con] = "email igual";
                     con++;
                 }

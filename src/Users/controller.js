@@ -40,7 +40,7 @@ module.exports.UsersController = {
                 Response.error(res, verify);
             }
             else {
-                resultsql(`insert_User '${body.username}', '${body.password}', '${body.numberphone}', '${body.gmail}' `);
+                resultsql(`insert_User '${body.username}', '${body.password}', '${body.numberphone}', '${body.email}' `);
                 resultsql(`getUserId`).then((result) => {
                     console.log(result);
                     Response.success(res, 200, "registrado", result);

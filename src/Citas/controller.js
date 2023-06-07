@@ -14,7 +14,7 @@ module.exports.CitasController = {
                 const fecha = new Date();
                 console.log(` Dia ${moment().format('LT').substring(0, 1)}`);
                 console.log(fecha.getHours().toString().substring(0, 1))
-                resultsql("getHoursDate").then((hour) => {
+                resultsql(`getHoursDate '${data[2]}'`).then((hour) => {
 
                     if (result.length <= 0) {
                         Response.success(res, 200, "Citas Registradas", hour);

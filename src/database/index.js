@@ -10,7 +10,8 @@ const resultsql = (sqlQuery) => {
         password: '18765432', //ponerle la contrasenna
         server: 'localhost',
         database: 'barbershop',
-        port: 1433,
+
+        port: 2711,
         options: {
             trustServerCertificate: true
         }

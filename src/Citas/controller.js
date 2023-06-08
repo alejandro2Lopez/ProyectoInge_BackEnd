@@ -216,5 +216,41 @@ module.exports.CitasController = {
             console.log(message);
         });
 
+    },
+
+    getManageDatebyBarber: (req, res) => {
+        const { params } = req;
+        data = params.id.split(',');
+        console.log(`'${data[0]}',${data[1]}`)
+        resultsql(`getManageDatebyBarber ${data[0]},'${data[1]}'`).then((result) => {
+            const fulldate = new Date().toISOString().slice(0, 10);
+            const fecha = new Date();
+           
+            for (let index = 0; index < result.length; index++) {
+                var hora = 0;
+                if (result[index].HoraCita.toString().substring(result[index].HoraCita.toString().length - 2, result[index].HoraCita.toString().length) === "pm") {
+                    hora = (parseInt(result[index].HoraCita.toString().split(':')[0]) + 12);
+                    console.log(hora)
+                }
+
+                if ((fecha.getHours() + 2) > hora &&
+                    fulldate == result[index].fecha.toISOString().substring(0, 10)) {
+                    result[index].cancelar = 0
+
+                } if (fulldate == result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
+                    && moment().format('LT').split(':')[0] == 11) {
+                    result[index].cancelar = 0
+
+
+                }
+            }
+            Response.success(res, 200, "Citas Registradas", result);
+
+
+
+        }).catch((message) => {
+            console.log(message);
+        });
+
     }
 }

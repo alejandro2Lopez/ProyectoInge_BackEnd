@@ -11,7 +11,7 @@ const resultsql = (sqlQuery) => {
         server: 'localhost',
         database: 'barbershop',
 
-        port: 2711,
+        port: 1433,
         options: {
             trustServerCertificate: true
         }

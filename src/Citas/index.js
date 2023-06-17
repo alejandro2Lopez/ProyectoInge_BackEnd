@@ -10,6 +10,7 @@ module.exports.CitasAPI = (app) => {
     
     .get('/citasbarbero/:id', CitasController.getManageDatebyBarber)
 
+    .get('/horaCita', CitasController.getHoraCita)
 
 
     .get('/:id', CitasController.getCitas)//Se utiliza para concatenar

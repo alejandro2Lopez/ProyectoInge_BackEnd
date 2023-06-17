@@ -93,7 +93,7 @@ module.exports.CitasController = {
                                             hour[index1].HoraCita = "Ocupado";
 
                                         }
-                                        console.log(index1)
+                                      //  console.log(index1)
                                         if (index1 === hour.length - 1 && hour[index1 - 1].HoraCita === "Ocupado") {
                                             hour[index1].HoraCita = "Ocupado";
 
@@ -173,6 +173,15 @@ module.exports.CitasController = {
         data = params.id.split(',');
         resultsql(`getManageDatebyBarber ${data[0]},'${data[1]}'`).then((result) => {
             result = Service.cancelDates(result);
+            Response.success(res, 200, "Citas Registradas", result);
+        }).catch((message) => {
+            console.log(message);
+        });
+
+    },
+
+    getHoraCita: ( req, res) => {
+        resultsql(`getHoraCita`).then((result) => {
             Response.success(res, 200, "Citas Registradas", result);
         }).catch((message) => {
             console.log(message);

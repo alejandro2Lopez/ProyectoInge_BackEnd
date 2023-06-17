@@ -8,15 +8,14 @@ module.exports.Service = {
 
             }
             if (fecha.getHours() > hora) {
-                console.log(11 == hora && parseInt(hour[index].HoraCita.toString().split(':')[1].substring(0, 2)));
-
+             
                 hour[index].HoraCita = "Ocupado";
             }
-
-            if (fecha.getHours() == hora && parseInt(hour[index].HoraCita.toString().split(':')[1].substring(0, 2)) <= fecha.getMinutes) {
-                hour[index].HoraCita = "Ocupado";
+            if (hour[index].HoraCita != "Ocupado") {
+                if (fecha.getHours() == hora && parseInt(hour[index].HoraCita.toString().split(':')[1].substring(0, 2)) <= parseInt(fecha.getMinutes())) {
+                    hour[index].HoraCita = "Ocupado";
+                }
             }
-
         }
         return hour
     },
@@ -30,14 +29,16 @@ module.exports.Service = {
             var hora = 0;
             if (result[index].HoraCita.toString().substring(result[index].HoraCita.toString().length - 2, result[index].HoraCita.toString().length) === "pm") {
                 hora = (parseInt(result[index].HoraCita.toString().split(':')[0]) + 12);
-                console.log(hora)
+             //   console.log(hora)
             }
 
             if ((fecha.getHours() + 2) > hora &&
+            result[index].fecha != null &&
                 fulldate == result[index].fecha.toISOString().substring(0, 10)) {
                 result[index].cancelar = 0
 
-            } if (fulldate == result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
+            } if (result[index].fecha != null &&
+                fulldate == result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
                 && moment().format('LT').split(':')[0] == 11) {
                 result[index].cancelar = 0
 

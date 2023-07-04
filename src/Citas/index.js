@@ -6,7 +6,9 @@ module.exports.CitasAPI = (app) => {
   router
     .get('/citasdeusuario/:id', CitasController.getDatebyUser)
     .get('/citasbarbero/:id', CitasController.getManageDatebyBarber)
+    .get('/userAttendaceDetail/:id', CitasController.getUserAttendaceDetail)
     .get('/horaCita', CitasController.getHoraCita)
+    .get('/users', CitasController.getUsers)
     .get('/:id', CitasController.getCitas)
     
 

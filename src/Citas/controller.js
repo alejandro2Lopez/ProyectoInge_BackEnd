@@ -221,9 +221,28 @@ module.exports.CitasController = {
         });
 
     },
+    getUserAttendaceDetail: (req, res) => {
+        const { params } = req;
+        data = params.id.split(',');
+        resultsql(`customer_Information '${data[0]}',${data[1]}`).then((result) => {
+            console.log(result)
+            Response.success(res, 200, "Citas Registradas", result);
+        }).catch((message) => {
+            console.log(message);
+        });
+
+    },
 
     getHoraCita: ( req, res) => {
         resultsql(`getHoraCita`).then((result) => {
+            Response.success(res, 200, "Citas Registradas", result);
+        }).catch((message) => {
+            console.log(message);
+        });
+
+    },
+    getUsers: ( req, res) => {
+        resultsql(`getUsers`).then((result) => {
             Response.success(res, 200, "Citas Registradas", result);
         }).catch((message) => {
             console.log(message);

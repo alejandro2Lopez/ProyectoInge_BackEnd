@@ -49,8 +49,9 @@ module.exports.Service = {
             } if (Today== result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
                 && moment().format('LT').split(':')[0] == 11) {
                 result[index].cancelar = 0
-
-
+            }
+            if (!Array.isArray(result)) {
+                return [];
             }
         }
         return result;

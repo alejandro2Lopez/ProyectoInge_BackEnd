@@ -6,13 +6,13 @@ module.exports.Email = {
         var transporter = nodemailer.createTransport({
             service: 'hotmail',
             auth: {
-                user: 'correo',
-                pass: 'password'
+                user: 'pruebasBarberApp@hotmail.com',
+                pass: 'BarberApp'
             }
         });
 
         var mailOptions = {
-            from: 'correo',
+            from: 'pruebasBarberApp@hotmail.com',
             to: email,
             subject: subject,
             text: message
@@ -20,11 +20,11 @@ module.exports.Email = {
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
+                console.log(message + '.........'+email+ '.........'+subject);
                 console.log(error);
             } else {
                 console.log('Email sent: ' + info.response);
             }
         });
     }
-
 }

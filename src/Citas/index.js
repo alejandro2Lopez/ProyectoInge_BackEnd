@@ -5,17 +5,17 @@ const { CitasController } = require('./controller');
 module.exports.CitasAPI = (app) => {
   router
     .get('/citasdeusuario/:id', CitasController.getDatebyUser)
-
-
-    
     .get('/citasbarbero/:id', CitasController.getManageDatebyBarber)
-
     .get('/horaCita', CitasController.getHoraCita)
+    .get('/:id', CitasController.getCitas)
+    
 
-
-    .get('/:id', CitasController.getCitas)//Se utiliza para concatenar
-    //Se utiliza para concatenargetDatebyUser)
     .post('/', CitasController.confirmDate)
+    .post('/reservar', CitasController.book)
+
+    .put('/ausenciadelcliente/:id', CitasController.withoutAssistance)
+    .put('/presenciadelcliente/:id', CitasController.withAssistance)
+
     .delete('/citasdeusuario/:id', CitasController.deletedate)
 
 

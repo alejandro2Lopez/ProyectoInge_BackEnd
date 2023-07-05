@@ -16,6 +16,12 @@ module.exports.Service = {
                 if (fecha.getHours() == hora && parseInt(hour[index].HoraCita.toString().split(':')[1].substring(0, 2)) <= parseInt(fecha.getMinutes())) {
                     hour[index].HoraCita = "Ocupado";
                 }
+<<<<<<< HEAD
+=======
+            }
+            if (!Array.isArray(hour)) {
+                return [];
+>>>>>>> origin/Master
             }
 
         }
@@ -42,12 +48,17 @@ module.exports.Service = {
                 result[index].cancelar = 0
 
 
+<<<<<<< HEAD
               
+=======
+             
+>>>>>>> origin/Master
             } if (Today== result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
                 && moment().format('LT').split(':')[0] == 11) {
                 result[index].cancelar = 0
-
-
+            }
+            if (!Array.isArray(result)) {
+                return [];
             }
         }
         return result;

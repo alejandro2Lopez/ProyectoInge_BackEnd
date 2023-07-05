@@ -65,15 +65,16 @@ module.exports.UsersController = {
     },
     loginUser: (req, res) => {
         const { body } = req;
-        resultsql(`getUser '${body.gmail}' `).then((result) => {
+        resultsql(`getUser '${body.email}' `).then((result) => {
             console.log(result)
             if (result[0] != undefined && result[0].contrasennia == body.password.toString()) {
                 data = {
                     idperson: result[0].idPersona,
                     username: result[0].nombreUsuario,
-                    gmail: result[0].gmail,
+                    email: result[0].email,
                     role: result[0].descripcion,
                     numberPhone: result[0].numeroTelefonico
+              
                 }
                 Response.success(res, 200, "Loggeado", data);
             } else {

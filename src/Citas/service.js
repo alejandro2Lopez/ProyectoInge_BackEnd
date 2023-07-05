@@ -1,3 +1,4 @@
+const moment = require("moment");
 module.exports.Service = {
     getAvaibleHours: (hour = [], fecha) => {
 
@@ -8,7 +9,7 @@ module.exports.Service = {
 
             }
             if (fecha.getHours() > hora) {
-             
+
                 hour[index].HoraCita = "Ocupado";
             }
             if (hour[index].HoraCita != "Ocupado") {
@@ -16,26 +17,33 @@ module.exports.Service = {
                     hour[index].HoraCita = "Ocupado";
                 }
             }
+
         }
+
         return hour
     },
 
     cancelDates: (result) => {
 
         const fulldate = new Date().toISOString().slice(0, 10);
-        const fecha = new Date();
-
+        const date = new Date();
+        var year = date.getFullYear();
+        var month = ('0' + (date.getMonth() + 1)).slice(-2); 
+        var day = ('0' + date.getDate()).slice(-2); 
+        var Today = year + '-' + month + '-' + day;
         for (let index = 0; index < result.length; index++) {
             var hora = 0;
             if (result[index].HoraCita.toString().substring(result[index].HoraCita.toString().length - 2, result[index].HoraCita.toString().length) === "pm") {
                 hora = (parseInt(result[index].HoraCita.toString().split(':')[0]) + 12);
-                 }
-
-            if ((fecha.getHours() + 2) > hora &&
-                fulldate == result[index].fecha.toISOString().substring(0, 10)) {
+            }
+            console.log(result[index].fecha.toISOString().substring(0, 10))
+            if (parseInt(date.getHours() + 2) > hora &&
+                Today == result[index].fecha.toISOString().substring(0, 10)) {
                 result[index].cancelar = 0
 
-            } if (fulldate == result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
+
+              
+            } if (Today== result[index].fecha.toISOString().substring(0, 10) && parseInt(result[index].HoraCita.toString().split(':')[0]) == 1
                 && moment().format('LT').split(':')[0] == 11) {
                 result[index].cancelar = 0
 

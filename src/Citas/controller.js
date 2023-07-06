@@ -190,11 +190,29 @@ module.exports.CitasController = {
         console.log(`Entré ACÁ ${data[3].trim().toLowerCase()} '`)
 
         if (data[3].trim().toLowerCase() == 'ambas') {
-            resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`);
+            resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`).then((result) => {
+                for (let i = 0; result != null && i < result.length; i++) {
+                    Email.sendEmail(`Se ha cancelado la cita `+result[i].date+` a las `+result[i].horaCita+` `, result[i].email, 'Canelacion de cita',)
+                }
+            }).catch((message) => {
+                console.log(message);
+            });
             const nextHour = parseInt(data[1]) + 1;
-            resultsql(`deleteDateForUser ${data[0]},${nextHour},'${data[2]}'`);
+            resultsql(`deleteDateForUser ${data[0]},${nextHour},'${data[2]}'`).then((result) => {
+                for (let i = 0; result != null && i < result.length; i++) {
+                    Email.sendEmail(`Se ha cancelado la cita `+result[i].date+` a las `+result[i].horaCita+` `, result[i].email, 'Canelacion de cita',)
+                }
+            }).catch((message) => {
+                console.log(message);
+            });
         } else {
-            resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`)
+            resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`).then((result) => {
+                for (let i = 0; result != null && i < result.length; i++) {
+                    Email.sendEmail(`Se ha cancelado la cita `+result[i].date+` a las `+result[i].horaCita+` `, result[i].email, 'Canelacion de cita',)
+                }
+            }).catch((message) => {
+                console.log(message);
+            });
         }       
         Response.success(res, 200, "Cita eliminada", "Su cita ha sido eliminada con éxito");
     },
@@ -245,7 +263,7 @@ module.exports.CitasController = {
             result = Service.cancelDates(result);
 
             var userDates = []
-            for (let index = 0; index < result.length - 1; index++) {
+            for (let index = 0; index < result.length ; index++) {
                 userDates.push(result[index]);
                 if (result[index].HairCut === 'Ambas') {
                     index = index + 1

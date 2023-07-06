@@ -4,10 +4,10 @@ module.exports.Email = {
     sendEmail: (message, email,subject) => {
 
         var transporter = nodemailer.createTransport({
-            service: 'hotmail',
+            service: 'gmail',
             auth: {
-                user: 'pruebasBarberApp@hotmail.com',
-                pass: 'BarberApp'
+                user: 'jansc7@gmail.com',
+                pass: 'gpfhjiisimboxvkv'
             }
         });
 

@@ -8,6 +8,10 @@ module.exports.CitasController = {
     getCitas: (req, res) => {
         const { params } = req
         data = params.id.split(',');
+        if(data[2] == null || data[2].replace(' ','') === '' || data[0] == null || data[0].replace(' ','') === ''){
+            console.log('Fecha invalida');
+            return;
+        }
         try {
             resultsql(`getHoursDatesByDateByBarber '${data[2]}',${data[0]}`).then((result) => {
                 if(data[2] == null || data[2].replace(' ','') === ''){
@@ -156,6 +160,7 @@ module.exports.CitasController = {
 
         }
     },
+    
     book: (req, res) => {
         const { body } = req;
         body.date = body.date.replace("am", "");

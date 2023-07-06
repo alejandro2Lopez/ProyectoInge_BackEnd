@@ -1,7 +1,7 @@
 const { Response } = require("../common/response");
 const { resultsql } = require("../database");
 const bcrypt = require("bcrypt");
-
+const { Email } = require("../common/emai");
 
 module.exports.UsersController = {
     getUsers: (req, res) => {
@@ -57,6 +57,20 @@ module.exports.UsersController = {
 
 
     },
+    recoveryPass: (req, res) => {
+        const { params } = req;
+        data = params.id;
+
+        resultsql(`password_Recovery '${data}'`).then((result) => {
+            Response.success(res, 200, "Citas Registradas", "Su cita ha sido agendada con éxtio");
+            for (let i = 0; result != null && i < result.length; i++) {
+                Email.sendEmail( `Usted a solicitado un cambio de contraseña, la nueva contraseña es: `+result[i].newPassword,result[i].correo, 'Recuperacion de contraseña',)
+            }
+           
+        }).catch((message) => {
+            console.log(message);
+        });
+    },
     loginUser: (req, res) => {
         const { body } = req;
         resultsql(`getUser '${body.email}' `).then((result) => {
@@ -76,8 +90,26 @@ module.exports.UsersController = {
         }).catch((message) => {
             console.log(message);
         });
-    }
+    },
 
+    changePassword: (req, res) => {
+        const { body } = req;
+        resultsql(`change_password '${body.email}','${body.password}','${body.newPassword}' `).then((result) => {
+          //  console.log(result)
+            if (result[0] != undefined) {
+                if(result[0].mensaje === '200'){
+                    Response.success(res, 200, "Cambiada con exito");
+                }else{
+                    Response.success(res, 200, "Usuario no loggeado", "Usuario o contraseña incorrecta");
+                }
+                
+            } else {
+                Response.success(res, 200, "Usuario no loggeado", "Usuario o contraseña incorrecta");
+            }
+        }).catch((message) => {
+            console.log(message);
+        });
+    }
 }
 
 

@@ -1,4 +1,5 @@
-var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer'); 
+// Modulo para enviar correos si necesario
 module.exports.Email = {
 
     sendEmail: (message, email,subject) => {

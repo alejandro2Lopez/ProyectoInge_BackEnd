@@ -5,8 +5,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { UsersAPI } = require('./src/Users')
-const {CitasAPI} = require('./src/Citas')
-
+const { CitasAPI } = require('./src/Citas')
+//Asignacion de rutasm creación primeramente del api.
 app.use(bodyParser.urlencoded({ extend: true }))
 app.use(cors())
 app.use(bodyParser.json())

@@ -14,7 +14,7 @@ module.exports.CitasController = {
         }
         try {
             resultsql(`getHoursDatesByDateByBarber '${data[2]}',${data[0]}`).then((result) => {
-                if(data[2] == null || data[2].replace(' ','') === ''){
+                if (data[2] == null || data[2].replace(' ', '') === '') {
                     console.log('Fecha invalida');
                     return;
                 }
@@ -101,7 +101,7 @@ module.exports.CitasController = {
                                             hour[index1].HoraCita = "Ocupado";
 
                                         }
-                                      //  console.log(index1)
+                                        //  console.log(index1)
                                         if (index1 === hour.length - 1 && hour[index1 - 1].HoraCita === "Ocupado") {
                                             hour[index1].HoraCita = "Ocupado";
 
@@ -139,9 +139,9 @@ module.exports.CitasController = {
         const { body } = req;
         if (body.hairCut == 1 || body.hairCut == 2) {
             resultsql(`insert_Date '${body.barber}',${body.client},${body.hourid},'${body.date}',${body.hairCut}`).then((result) => {
-                console.log('Correo: '+body.email)
+
                 Response.success(res, 200, "Citas Registradas", "Su cita ha sido agendada con éxtio");
-                 Email.sendEmail(`Su cita para el barbero será en la fecha ${body.date} a las ${body.hour} `,body.email, 'Confirmación de Cita',)
+                Email.sendEmail(`Su cita para el barbero será en la fecha ${body.date} a las ${body.hour} `, body.email, 'Confirmación de Cita',)
 
             }).catch((message) => {
                 console.log(message);
@@ -151,8 +151,8 @@ module.exports.CitasController = {
             try {
                 resultsql(`insert_Date '${body.barber}',${body.client},${body.hourid},'${body.date}',${body.hairCut}`)
                 resultsql(`insert_Date '${body.barber}',${body.client},${(body.hourid + 1)},'${body.date}',${body.hairCut}`)
-                console.log(body.email)
-             //  Email.sendEmail(body.email, `Su cita para el barbero será en la fecha ${body.date} a las ${body.hour} `, 'Confirmación de Cita',)
+
+                //  Email.sendEmail(body.email, `Su cita para el barbero será en la fecha ${body.date} a las ${body.hour} `, 'Confirmación de Cita',)
                 Response.success(res, 200, "Citas Registradas", "Su cita ha sido agendada con éxtio");
             } catch (message) {
                 Response.success(res, 200, "Citas Registradas", "Su cita no ha sido agendada con éxtio");
@@ -167,19 +167,19 @@ module.exports.CitasController = {
         body.date = body.date.replace("pm", "");
 
         resultsql(`insert_Freeschedule '${body.barber}','${body.startHour}','${body.endHour}','${body.date}'`).then((result) => {
-         //  console.log(result)
+            //  console.log(result)
             Response.success(res, 200, "Citas Registradas", "Su cita ha sido agendada con éxtio");
             for (let i = 0; i < result.length; i++) {
-               // console.log(result[i].correo)
-               var hora  = "";
-               if(result[i].horaCita != null){
-                hora =result[i].horaCita;
-               
-                Email.sendEmail( `La cita con el barbero en la fecha ${body.date} a las ${hora} a sido cancelada por el barbero, favor reserve para otro dia o consulte via WhatsApp`,result[i].correo, 'Cita cancelada',)
-               }
-              
+                // console.log(result[i].correo)
+                var hora = "";
+                if (result[i].horaCita != null) {
+                    hora = result[i].horaCita;
+
+                    Email.sendEmail(`La cita con el barbero en la fecha ${body.date} a las ${hora} ha sido cancelada por el barbero, favor reserve para otro dia o consulte via WhatsApp`, result[i].correo, 'Cita cancelada',)
+                }
+
             }
-           
+
         }).catch((message) => {
             console.log(message);
         });
@@ -187,13 +187,22 @@ module.exports.CitasController = {
     deletedate: (req, res) => {
         const { params } = req
         data = params.id.split(",");
-        resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`)
+        console.log(`Entré ACÁ ${data[3].trim().toLowerCase()} '`)
+
+        if (data[3].trim().toLowerCase() == 'ambas') {
+            resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`);
+            const nextHour = parseInt(data[1]) + 1;
+            resultsql(`deleteDateForUser ${data[0]},${nextHour},'${data[2]}'`);
+        } else {
+            resultsql(`deleteDateForUser ${data[0]},${data[1]},'${data[2]}'`)
+        }       
         Response.success(res, 200, "Cita eliminada", "Su cita ha sido eliminada con éxito");
     },
-    
+
     withoutAssistance: (req, res) => {
         const { params } = req
         data = params.id.split(",");
+
         resultsql(`withoutAssistance ${data[0]},'${data[1]}'`)
         Response.success(res, 200, "Cita eliminada", "Su cita ha sido eliminada con éxito");
     },
@@ -201,15 +210,29 @@ module.exports.CitasController = {
     withAssistance: (req, res) => {
         const { params } = req
         data = params.id.split(",");
+        console.log("Entre")
         resultsql(`withAssistance ${data[0]},'${data[1]}'`)
+
         Response.success(res, 200, "Cita eliminada", "Su cita ha sido eliminada con éxito");
     },
 
     getDatebyUser: (req, res) => {
         const { params } = req;
         resultsql(`getDatebyUser ${params.id}`).then((result) => {
-            const result1 = Service.cancelDates(result); 
-            Response.success(res, 200, "Citas Registradas", result1);
+            result = Service.cancelDates(result);
+
+            var userDates = []
+
+            for (let index = 0; index < result.length; index++) {
+                userDates.push(result[index]);
+                if (result[index].HairCut == 'Ambas') {
+
+                    index = index + 1
+
+                }
+
+            }
+            Response.success(res, 200, "Citas Registradas", userDates);
         }).catch((message) => {
             console.log(message);
         });
@@ -220,7 +243,16 @@ module.exports.CitasController = {
         data = params.id.split(',');
         resultsql(`getManageDatebyBarber ${data[0]},'${data[1]}'`).then((result) => {
             result = Service.cancelDates(result);
-            Response.success(res, 200, "Citas Registradas", result);
+
+            var userDates = []
+            for (let index = 0; index < result.length - 1; index++) {
+                userDates.push(result[index]);
+                if (result[index].HairCut === 'Ambas') {
+                    index = index + 1
+                }
+
+            }
+            Response.success(res, 200, "Citas Registradas", userDates);
         }).catch((message) => {
             console.log(message);
         });
@@ -230,7 +262,7 @@ module.exports.CitasController = {
         const { params } = req;
         data = params.id.split(',');
         resultsql(`customer_Information '${data[0]}',${data[1]}`).then((result) => {
-            console.log(result)
+            // console.log(result)
             Response.success(res, 200, "Citas Registradas", result);
         }).catch((message) => {
             console.log(message);
@@ -238,7 +270,7 @@ module.exports.CitasController = {
 
     },
 
-    getHoraCita: ( req, res) => {
+    getHoraCita: (req, res) => {
         resultsql(`getHoraCita`).then((result) => {
             Response.success(res, 200, "Citas Registradas", result);
         }).catch((message) => {
@@ -246,7 +278,7 @@ module.exports.CitasController = {
         });
 
     },
-    getUsers: ( req, res) => {
+    getUsers: (req, res) => {
         resultsql(`getUsers`).then((result) => {
             Response.success(res, 200, "Citas Registradas", result);
         }).catch((message) => {

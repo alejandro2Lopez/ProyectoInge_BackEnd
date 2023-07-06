@@ -82,6 +82,7 @@ module.exports.UsersController = {
                     email: result[0].email,
                     role: result[0].descripcion,
                     numberPhone: result[0].numeroTelefonico
+              
                 }
                 Response.success(res, 200, "Loggeado", data);
             } else {
